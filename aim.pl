@@ -60,6 +60,7 @@ sub display_results($) {
 }
 
 sub match {
+    my @nArr;
     my @arr = @{@_[0]};
     #print '@arr=', @arr;
     my $tar = @_[1];
@@ -78,17 +79,19 @@ sub match {
         if ($l == 1) {
             return 0;
         } elsif ($l == 2) {
-            my @nArr = @arr[0];
-            return match(\@nArr, $tar);
+            @nArr = @arr[0];
         } else {
-            my @nArr = @arr[0..$half];
-            return match(\@nArr, $tar);
+            # set array to index 0-$half and try again
+            @nArr = @arr[0..$half];
         }
+        # recurse until the value is found, or only one item left
+        return match(\@nArr, $tar);
     } elsif ($tar > $arr[$half]) {
         if ($l == 1) {
             return 1;
         } else {
-            my @nArr = @arr[$half..$l-1];
+            # set array to index $half-last index and try again
+            @nArr = @arr[$half..$l-1];
             return $half + match(\@nArr, $tar);
         }
     }
